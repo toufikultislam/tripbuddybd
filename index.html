@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Buddy BD - Tour, Food, Hotels & Rides</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #064e3b; color: #f3f4f6; }
+        .glass { background: rgba(6, 78, 59, 0.88); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .glass-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes riseUp {
+            0% { transform: translateY(35px) scale(0.9); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .animate-rise { animation: riseUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- 1. CINEMATIC SPLASH SCREEN (Rising Landmarks) -->
+    <div id="splash-screen" class="fixed inset-0 z-50 bg-[#022c22] flex flex-col items-center justify-center p-6 text-center">
+        <div class="relative w-44 h-44 mb-6 flex items-center justify-center bg-emerald-950/60 rounded-3xl border border-emerald-500/30 shadow-2xl overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center animate-rise">
+                <svg class="w-32 h-32 text-emerald-400 drop-shadow-[0_10px_20px_rgba(16,185,129,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="11" r="3.5" fill="#ef4444" stroke="none"/>
+                </svg>
+            </div>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2 animate-fade">Trip Buddy BD</h1>
+        <p class="text-emerald-300 text-xs tracking-wide max-w-xs animate-fade">Bangladesh Tour, Food, Hotels & Rides Aggregator</p>
+        <div class="mt-8 w-48 h-1 bg-emerald-900/80 rounded-full overflow-hidden">
+            <div id="splash-progress" class="h-full bg-emerald-400 w-0 transition-all duration-3000 ease-out"></div>
+        </div>
+    </div>
+
+    <!-- 2. MANDATORY PRE-ENTRY LOGIN GATE & 194 COUNTRIES WITH FLAGS (No Israel) -->
+    <div id="login-gate" class="fixed inset-0 z-40 bg-[#022c22]/95 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass max-w-md w-full p-8 rounded-3xl shadow-2xl border border-emerald-500/20 text-center">
+            <div class="w-16 h-16 bg-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-400">
+                <i data-lucide="compass" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-1">Welcome to Trip Buddy BD</h2>
+            <p class="text-xs text-emerald-300 mb-6">Sign in once to unlock 1-click bookings & live partner SSO</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-medium text-emerald-200 mb-1">Select Your Country (194 Countries with Flags)</label>
+                    <select id="country-select" class="w-full bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-400">
+                        <option value="Bangladesh" selected>🇧🇩 Bangladesh</option>
+                        <option value="Afghanistan">🇦🇫 Afghanistan</option>
+                        <option value="Albania">🇦🇱 Albania</option>
+                        <option value="Algeria">🇩🇿 Algeria</option>
+                        <option value="Andorra">🇦🇩 Andorra</option>
+                        <option value="Angola">🇦🇴 Angola</option>
+                        <option value="Antigua and Barbuda">🇦🇬 Antigua and Barbuda</option>
+                        <option value="Argentina">🇦🇷 Argentina</option>
+                        <option value="Armenia">🇦🇲 Armenia</option>
+                        <option value="Australia">🇦🇺 Australia</option>
+                        <option value="Austria">🇦🇹 Austria</option>
+                        <option value="Azerbaijan">🇦🇿 Azerbaijan</option>
+                        <option value="Bahamas">🇧🇸 Bahamas</option>
+                        <option value="Bahrain">🇧🇭 Bahrain</option>
+                        <option value="Barbados">🇧🇧 Barbados</option>
+                        <option value="Belarus">🇧🇾 Belarus</option>
+                        <option value="Belgium">🇧🇪 Belgium</option>
+                        <option value="Belize">🇧🇿 Belize</option>
+                        <option value="Benin">🇧🇯 Benin</option>
+                        <option value="Bhutan">🇧🇹 Bhutan</option>
+                        <option value="Bolivia">🇧🇴 Bolivia</option>
+                        <option value="Bosnia and Herzegovina">🇧🇦 Bosnia and Herzegovina</option>
+                        <option value="Botswana">🇧🇼 Botswana</option>
+                        <option value="Brazil">🇧🇷 Brazil</option>
+                        <option value="Brunei">🇧🇳 Brunei</option>
+                        <option value="Bulgaria">🇧🇬 Bulgaria</option>
+                        <option value="Burkina Faso">🇧🇫 Burkina Faso</option>
+                        <option value="Burundi">🇧🇮 Burundi</option>
+                        <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+                        <option value="Cambodia">🇰🇭 Cambodia</option>
+                        <option value="Cameroon">🇨🇲 Cameroon</option>
+                        <option value="Canada">🇨🇦 Canada</option>
+                        <option value="Central African Republic">🇨🇫 Central African Republic</option>
+                        <option value="Chad">🇹🇩 Chad</option>
+                        <option value="Chile">🇨🇱 Chile</option>
+                        <option value="China">🇨🇳 China</option>
+                        <option value="Colombia">🇨🇴 Colombia</option>
+                        <option value="Comoros">🇰🇲 Comoros</option>
+                        <option value="Congo">🇨🇬 Congo</option>
+                        <option value="Costa Rica">🇨🇷 Costa Rica</option>
+                        <option value="Croatia">🇭🇷 Croatia</option>
+                        <option value="Cuba">🇨🇺 Cuba</option>
+                        <option value="Cyprus">🇨🇾 Cyprus</option>
+                        <option value="Czechia">🇨🇿 Czechia</option>
+                        <option value="Denmark">🇩🇰 Denmark</option>
+                        <option value="Djibouti">🇩🇯 Djibouti</option>
+                        <option value="Dominica">🇩🇲 Dominica</option>
+                        <option value="Dominican Republic">🇩🇴 Dominican Republic</option>
+                        <option value="Ecuador">🇪🇨 Ecuador</option>
+                        <option value="Egypt">🇪🇬 Egypt</option>
+                        <option value="El Salvador">🇸🇻 El Salvador</option>
+                        <option value="Equatorial Guinea">🇬🇶 Equatorial Guinea</option>
+                        <option value="Eritrea">🇪🇷 Eritrea</option>
+                        <option value="Estonia">🇪🇪 Estonia</option>
+                        <option value="Eswatini">🇸🇿 Eswatini</option>
+                        <option value="Ethiopia">🇪🇹 Ethiopia</option>
+                        <option value="Fiji">🇫🇯 Fiji</option>
+                        <option value="Finland">🇫🇮 Finland</option>
+                        <option value="France">🇫🇷 France</option>
+                        <option value="Gabon">🇬🇦 Gabon</option>
+                        <option value="Gambia">🇬🇲 Gambia</option>
+                        <option value="Georgia">🇬🇪 Georgia</option>
+                        <option value="Germany">🇩🇪 Germany</option>
+                        <option value="Ghana">🇬🇭 Ghana</option>
+                        <option value="Greece">🇬🇷 Greece</option>
+                        <option value="Grenada">🇬🇩 Grenada</option>
+                        <option value="Guatemala">🇬🇹 Guatemala</option>
+                        <option value="Guinea">🇬🇳 Guinea</option>
+                        <option value="Guinea-Bissau">🇬🇼 Guinea-Bissau</option>
+                        <option value="Guyana">🇬🇾 Guyana</option>
+                        <option value="Haiti">🇭🇹 Haiti</option>
+                        <option value="Honduras">🇭🇳 Honduras</option>
+                        <option value="Hungary">🇭🇺 Hungary</option>
+                        <option value="Iceland">🇮🇸 Iceland</option>
+                        <option value="India">🇮🇳 India</option>
+                        <option value="Indonesia">🇮🇩 Indonesia</option>
+                        <option value="Iran">🇮🇷 Iran</option>
+                        <option value="Iraq">🇮🇶 Iraq</option>
+                        <option value="Ireland">🇮🇪 Ireland</option>
+                        <option value="Italy">🇮🇹 Italy</option>
+                        <option value="Jamaica">🇯🇲 Jamaica</option>
+                        <option value="Japan">🇯🇵 Japan</option>
+                        <option value="Jordan">🇯🇴 Jordan</option>
+                        <option value="Kazakhstan">🇰🇿 Kazakhstan</option>
+                        <option value="Kenya">🇰🇪 Kenya</option>
+                        <option value="Kiribati">🇰🇮 Kiribati</option>
+                        <option value="Kuwait">🇰🇼 Kuwait</option>
+                        <option value="Kyrgyzstan">🇰🇬 Kyrgyzstan</option>
+                        <option value="Laos">🇱🇦 Laos</option>
+                        <option value="Latvia">🇱🇻 Latvia</option>
+                        <option value="Lebanon">🇱🇧 Lebanon</option>
+                        <option value="Lesotho">🇱🇸 Lesotho</option>
+                        <option value="Liberia">🇱🇷 Liberia</option>
+                        <option value="Libya">🇱🇾 Libya</option>
+                        <option value="Liechtenstein">🇱🇮 Liechtenstein</option>
+                        <option value="Lithuania">🇱🇹 Lithuania</option>
+                        <option value="Luxembourg">🇱🇺 Luxembourg</option>
+                        <option value="Madagascar">🇲🇬 Madagascar</option>
+                        <option value="Malawi">🇲🇼 Malawi</option>
+                        <option value="Malaysia">🇲🇾 Malaysia</option>
+                        <option value="Maldives">🇲🇻 Maldives</option>
+                        <option value="Mali">🇲🇱 Mali</option>
+                        <option value="Malta">🇲🇹 Malta</option>
+                        <option value="Marshall Islands">🇲🇭 Marshall Islands</option>
+                        <option value="Mauritania">🇲🇷 Mauritania</option>
+                        <option value="Mauritius">🇲🇺 Mauritius</option>
+                        <option value="Mexico">🇲🇽 Mexico</option>
+                        <option value="Micronesia">🇫🇲 Micronesia</option>
+                        <option value="Moldova">🇲🇩 Moldova</option>
+                        <option value="Monaco">🇲🇨 Monaco</option>
+                        <option value="Mongolia">🇲🇳 Mongolia</option>
+                        <option value="Montenegro">🇲🇪 Montenegro</option>
+                        <option value="Morocco">🇲🇦 Morocco</option>
+                        <option value="Mozambique">🇲🇿 Mozambique</option>
+                        <option value="Myanmar">🇲🇲 Myanmar</option>
+                        <option value="Namibia">🇳🇦 Namibia</option>
+                        <option value="Nauru">🇳🇷 Nauru</option>
+                        <option value="Nepal">🇳🇵 Nepal</option>
+                        <option value="Netherlands">🇳🇱 Netherlands</option>
+                        <option value="New Zealand">🇳🇿 New Zealand</option>
+                        <option value="Nicaragua">🇳🇮 Nicaragua</option>
+                        <option value="Niger">🇳🇪 Niger</option>
+                        <option value="Nigeria">🇳🇬 Nigeria</option>
+                        <option value="North Korea">🇰🇵 North Korea</option>
+                        <option value="North Macedonia">🇲🇰 North Macedonia</option>
+                        <option value="Norway">🇳🇴 Norway</option>
+                        <option value="Oman">🇴🇲 Oman</option>
+                        <option value="Pakistan">🇵🇰 Pakistan</option>
+                        <option value="Palau">🇵🇼 Palau</option>
+                        <option value="Palestine">🇵🇸 Palestine</option>
+                        <option value="Panama">🇵🇦 Panama</option>
+                        <option value="Papua New Guinea">🇵🇬 Papua New Guinea</option>
+                        <option value="Paraguay">🇵🇾 Paraguay</option>
+                        <option value="Peru">🇵🇪 Peru</option>
+                        <option value="Philippines">🇵🇭 Philippines</option>
+                        <option value="Poland">🇵🇱 Poland</option>
+                        <option value="Portugal">🇵🇹 Portugal</option>
+                        <option value="Qatar">🇶🇦 Qatar</option>
+                        <option value="Romania">🇷🇴 Romania</option>
+                        <option value="Russia">🇷🇺 Russia</option>
+                        <option value="Rwanda">🇷🇼 Rwanda</option>
+                        <option value="Saint Kitts and Nevis">🇰🇳 Saint Kitts and Nevis</option>
+                        <option value="Saint Lucia">🇱🇨 Saint Lucia</option>
+                        <option value="Saint Vincent">🇻🇨 Saint Vincent</option>
+                        <option value="Samoa">🇼🇸 Samoa</option>
+                        <option value="San Marino">🇸🇲 San Marino</option>
+                        <option value="Sao Tome and Principe">🇸🇹 Sao Tome and Principe</option>
+                        <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+                        <option value="Senegal">🇸🇳 Senegal</option>
+                        <option value="Serbia">🇷🇸 Serbia</option>
+                        <option value="Seychelles">🇸🇨 Seychelles</option>
+                        <option value="Sierra Leone">🇸🇱 Sierra Leone</option>
+                        <option value="Singapore">🇸🇬 Singapore</option>
+                        <option value="Slovakia">🇸🇰 Slovakia</option>
+                        <option value="Slovenia">🇸🇮 Slovenia</option>
+                        <option value="Solomon Islands">🇸🇧 Solomon Islands</option>
+                        <option value="Somalia">🇸🇴 Somalia</option>
+                        <option value="South Africa">🇿🇦 South Africa</option>
+                        <option value="South Korea">🇰🇷 South Korea</option>
+                        <option value="South Sudan">🇸🇸 South Sudan</option>
+                        <option value="Spain">🇪🇸 Spain</option>
+                        <option value="Sri Lanka">🇱🇰 Sri Lanka</option>
+                        <option value="Sudan">🇸🇩 Sudan</option>
+                        <option value="Suriname">🇸🇷 Suriname</option>
+                        <option value="Sweden">🇸🇪 Sweden</option>
+                        <option value="Switzerland">🇨🇭 Switzerland</option>
+                        <option value="Syria">🇸🇾 Syria</option>
+                        <option value="Taiwan">🇹🇼 Taiwan</option>
+                        <option value="Tajikistan">🇹🇯 Tajikistan</option>
+                        <option value="Tanzania">🇹🇿 Tanzania</option>
+                        <option value="Thailand">🇹🇭 Thailand</option>
+                        <option value="Timor-Leste">🇹🇱 Timor-Leste</option>
+                        <option value="Togo">🇹🇬 Togo</option>
+                        <option value="Tonga">🇹🇴 Tonga</option>
+                        <option value="Trinidad and Tobago">🇹🇹 Trinidad and Tobago</option>
+                        <option value="Tunisia">🇹🇳 Tunisia</option>
+                        <option value="Turkey">🇹🇷 Turkey</option>
+                        <option value="Turkmenistan">🇹🇲 Turkmenistan</option>
+                        <option value="Tuvalu">🇹🇻 Tuvalu</option>
+                        <option value="Uganda">🇺🇬 Uganda</option>
+                        <option value="Ukraine">🇺🇦 Ukraine</option>
+                        <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                        <option value="United States">🇺🇸 United States</option>
+                        <option value="Uruguay">🇺🇾 Uruguay</option>
+                        <option value="Uzbekistan">🇺🇿 Uzbekistan</option>
+                        <option value="Vanuatu">🇻🇺 Vanuatu</option>
+                        <option value="Vatican City">🇻🇦 Vatican City</option>
+                        <option value="Venezuela">🇻🇪 Venezuela</option>
+                        <option value="Vietnam">🇻🇳 Vietnam</option>
+                        <option value="Yemen">🇾🇪 Yemen</option>
+                        <option value="Zambia">🇿🇲 Zambia</option>
+                        <option value="Zimbabwe">🇿🇼 Zimbabwe</option>
+                    </select>
+                </div>
+
+                <button onclick="triggerGoogleLogin()" class="w-full flex items-center justify-center gap-3 bg-white text-gray-900 font-bold py-3.5 px-6 rounded-xl shadow-lg hover:bg-emerald-50 transition-all transform active:scale-95">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.18 21.32 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.99 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.68 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                    Continue with Google (Pick Real Account)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MAIN APP HEADER -->
+    <header class="sticky top-0 z-30 glass border-b border-emerald-700/30 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div id="brand-logo-container" class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold shadow-md overflow-hidden">
+                    <i data-lucide="compass" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 id="brand-title" class="text-lg font-extrabold text-white tracking-tight leading-none">Trip Buddy BD</h1>
+                    <span class="text-[10px] text-emerald-300 font-medium">Tour, Food, Hotels & Rides</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="openOwnerDashboard()" class="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-amber-500/30 transition-all">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Owner Dashboard
+                </button>
+                <div id="user-badge" class="hidden items-center gap-2 bg-emerald-800/60 border border-emerald-600/40 px-3 py-1.5 rounded-xl text-xs text-emerald-200">
+                    <span id="user-display-name" class="font-medium">User</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 4. HERO SECTION & SEARCH -->
+    <section class="max-w-7xl mx-auto px-4 py-6 w-full">
+        <div class="glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-xl border border-emerald-500/20">
+            <div class="max-w-2xl">
+                <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i> Instant SSO Activated
+                </span>
+                <h2 class="text-2xl md:text-4xl font-extrabold text-white tracking-tight mb-2">Explore Dhaka & Bangladesh Effortlessly</h2>
+                <p class="text-sm text-emerald-200 mb-6">19 Tourist Spots, 20 Popular Foods, 34 Budget-to-5★ Hotels & Live Rides with Smart App Deep-Linking.</p>
+                
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-emerald-400"></i>
+                    <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="Search spots, foods, hotels or rides..." class="w-full bg-emerald-950/80 border border-emerald-700/50 rounded-2xl pl-12 pr-4 py-3.5 text-sm text-white placeholder-emerald-400/60 focus:outline-none focus:border-emerald-400 shadow-inner">
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex items-center gap-3 mt-6 overflow-x-auto pb-2 scrollbar-none">
+            <button onclick="switchTab('spots')" id="tab-spots" class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-lg shadow-emerald-900/40 flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4"></i> Spots (19)
+            </button>
+            <button onclick="switchTab('foods')" id="tab-foods" class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-900/60 border border-emerald-700/50 text-emerald-200 hover:bg-emerald-800 flex items-center gap-2">
+                <i data-lucide="utensils" class="w-4 h-4"></i> Foods (20)
+            </button>
+            <button onclick="switchTab('hotels')" id="tab-hotels" class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-900/60 border border-emerald-700/50 text-emerald-200 hover:bg-emerald-800 flex items-center gap-2">
+                <i data-lucide="hotel" class="w-4 h-4"></i> Hotels (34)
+            </button>
+            <button onclick="switchTab('rides')" id="tab-rides" class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-900/60 border border-emerald-700/50 text-emerald-200 hover:bg-emerald-800 flex items-center gap-2">
+                <i data-lucide="car" class="w-4 h-4"></i> Rides & Cabs
+            </button>
+        </div>
+    </section>
+
+    <!-- 5. DYNAMIC CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 pb-16 flex-1 w-full">
+        <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- 6. FULL-SCREEN IN-APP MAP MODAL -->
+    <div id="map-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col">
+        <div class="glass px-6 py-4 flex items-center justify-between border-b border-emerald-700/35">
+            <h3 id="map-modal-title" class="text-lg font-bold text-white">Live Full-Screen Map</h3>
+            <button onclick="closeMapModal()" class="bg-emerald-800/80 text-white p-2 rounded-xl hover:bg-emerald-700">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="flex-1 w-full relative">
+            <iframe id="map-iframe" class="w-full h-full border-0" src="" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <!-- 7. ACTION / BOOKING MODAL -->
+    <div id="action-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass max-w-lg w-full p-6 rounded-3xl shadow-2xl border border-emerald-500/30 relative">
+            <button onclick="closeActionModal()" class="absolute right-4 top-4 text-emerald-300 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="modal-content-body"></div>
+        </div>
+    </div>
+
+    <!-- 8. OWNER / ADMIN DASHBOARD MODAL -->
+    <div id="owner-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass max-w-2xl w-full p-6 rounded-3xl shadow-2xl border border-amber-500/40 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-amber-500/20 mb-6">
+                <div class="flex items-center gap-2 text-amber-300">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    <h3 class="text-xl font-bold">Owner Dashboard & Control Center</h3>
+                </div>
+                <button onclick="closeOwnerDashboard()" class="text-amber-300 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="owner-auth-container" class="space-y-4">
+                <p class="text-sm text-emerald-200">Enter Admin PIN (Default: <code class="bg-emerald-950 px-2 py-1 rounded text-amber-300 font-bold">1234</code>) to manage logos, user counter, and add new spots/foods/hotels.</p>
+                <div class="flex gap-2">
+                    <input type="password" id="admin-pin-input" placeholder="Enter PIN" class="flex-1 bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                    <button onclick="verifyAdminPin()" class="bg-amber-500 text-gray-950 font-bold px-6 py-3 rounded-xl hover:bg-amber-400">Unlock</button>
+                </div>
+            </div>
+
+            <div id="owner-panel-content" class="hidden space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-card p-4 rounded-2xl border border-emerald-500/20">
+                        <span class="text-xs text-emerald-300">Total Real Logins</span>
+                        <h4 id="stat-user-count" class="text-2xl font-extrabold text-white mt-1">1</h4>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl border border-emerald-500/20">
+                        <span class="text-xs text-emerald-300">Selected Country</span>
+                        <h4 id="stat-country-display" class="text-2xl font-extrabold text-white mt-1">Bangladesh</h4>
+                    </div>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border border-emerald-500/20 space-y-3">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2"><i data-lucide="image" class="w-4 h-4 text-emerald-400"></i> Change Website Logo / Brand Image</h4>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-logo-url" placeholder="Paste Image URL here..." class="flex-1 bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="updateWebsiteLogo()" class="bg-emerald-600 text-white font-semibold px-4 py-2 rounded-xl text-xs hover:bg-emerald-500">Apply Logo</button>
+                    </div>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border border-emerald-500/20 space-y-3">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-emerald-400"></i> Add New Tourist Spot, Food or Hotel</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="new-item-category" class="bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="spots">Tourist Spot</option>
+                            <option value="foods">Food Item</option>
+                            <option value="hotels">Hotel</option>
+                        </select>
+                        <input type="text" id="new-item-name" placeholder="Item Name" class="bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="new-item-location" placeholder="Location / Area" class="bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="new-item-price-or-desc" placeholder="Price / Description" class="bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                    </div>
+                    <input type="text" id="new-item-img" placeholder="Custom Image URL (Optional)" class="w-full bg-emerald-950/80 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-white">
+                    <button onclick="addNewCustomItem()" class="w-full bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-emerald-400">Save Item to Database</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let spotsData = [
+            { id: 1, name: "Lalbagh Fort", location: "Old Dhaka", desc: "17th-century Mughal fort complex", img: "" },
+            { id: 2, name: "Ahsan Manzil", location: "Kumartuli, Dhaka", desc: "Official residential palace of Dhaka Nawab Family", img: "" },
+            { id: 3, name: "Star Mosque (Tara Masjid)", location: "Armanitola, Dhaka", desc: "Famous for ornate designs and blue mosaic stars", img: "" },
+            { id: 4, name: "National Parliament House", location: "Sher-e-Bangla Nagar", desc: "Masterpiece of modern architecture by Louis Kahn", img: "" },
+            { id: 5, name: "Bara Katra", location: "Chawkbazar, Old Dhaka", desc: "Historical Mughal-era architectural monument", img: "" },
+            { id: 6, name: "Chhota Katra", location: "Shakhari Bazar, Dhaka", desc: "Historic caravanserai from the reign of Shaista Khan", img: "" },
+            { id: 7, name: "Dhakeshwari Temple", location: "Bakshibazar", desc: "Historic Hindu temple and national temple of Bangladesh", img: "" },
+            { id: 8, name: "Curzon Hall", location: "University of Dhaka", desc: "Stunning blend of European and Mughal architecture", img: "" },
+            { id: 9, name: "National Martyrs' Memorial", location: "Savar", desc: "National monument dedicated to Liberation War heroes", img: "" },
+            { id: 10, name: "Dhanmondi Lake", location: "Dhanmondi", desc: "Popular urban lake surrounded by walkways and cafes", img: "" },
+            { id: 11, name: "Suhrawardy Udyan", location: "Shahbag", desc: "Historic park hosting the Eternal Flame", img: "" },
+            { id: 12, name: "Chandrima Udyan", location: "Sher-e-Bangla Nagar", desc: "Peaceful lakeside park near Parliament", img: "" },
+            { id: 13, name: "Military Museum", location: "Bijoy Sarani", desc: "Exhibits artillery, tanks, and military history", img: "" },
+            { id: 14, name: "National Science Museum", location: "Agargaon", desc: "Interactive science exhibits and planetarium", img: "" },
+            { id: 15, name: "Dhaka Zoo", location: "Mirpur", desc: "Largest zoo in Bangladesh with diverse wildlife", img: "" },
+            { id: 16, name: "Botanical Garden", location: "Mirpur", desc: "Expansive green sanctuary and plant research center", img: "" },
+            { id: 17, name: "Hatirjheel", location: "Central Dhaka", desc: "Modern waterfront project with water taxis", img: "" },
+            { id: 18, name: "Ramna Park", location: "Ramna", desc: "Historic sprawling green park in the city center", img: "" },
+            { id: 19, name: "Central Shaheed Minar", location: "Medical College area", desc: "Monument commemorating Language Movement martyrs", img: "" }
+        ];
+
+        let foodsData = [
+            { id: 1, name: "Kacchi Biryani", place: "Sultan's Dine / Kachchi Bhai", price: "৳ 320", best: true, img: "" },
+            { id: 2, name: "Chicken Burger", place: "Takeout / Mad Chef", price: "৳ 280", best: false, img: "" },
+            { id: 3, name: "Tehari", place: "Haji Nanna Biryani", price: "৳ 180", best: false, img: "" },
+            { id: 4, name: "White Sauce Pasta", place: "BFC / Chillox", price: "৳ 350", best: false, img: "" },
+            { id: 5, name: "Fried Chicken Meal", place: "KFC / CFC", price: "৳ 450", best: false, img: "" },
+            { id: 6, name: "Chinese Set Menu", place: "Star Kabab / Mainland China", price: "৳ 550", best: false, img: "" },
+            { id: 7, name: "Meatbox", place: "Dhaba / Herfy", price: "৳ 300", best: false, img: "" },
+            { id: 8, name: "Naga Wings", place: "Mad Chef", price: "৳ 250", best: false, img: "" },
+            { id: 9, name: "Chicken Shawarma", place: "Shawarma House", price: "৳ 170", best: false, img: "" },
+            { id: 10, name: "Momos", place: "Momo Inn / Canton", price: "৳ 220", best: false, img: "" },
+            { id: 11, name: "Woodfired Pizza", place: "Pizza Hut / Bella Italia", price: "৳ 699", best: false, img: "" },
+            { id: 12, name: "Grill Chicken & Naan", place: "Al Razzak / Star Kabab", price: "৳ 380", best: false, img: "" },
+            { id: 13, name: "Shahi Haleem", place: "Bhai Bhai Haleem", price: "৳ 200", best: false, img: "" },
+            { id: 14, name: "French Fries", place: "Burger Express", price: "৳ 150", best: false, img: "" },
+            { id: 15, name: "Beef Kala Bhuna", place: "Dhakaiya Bhoj", price: "৳ 420", best: true, img: "" },
+            { id: 16, name: "Chicken Chowmein", place: "Pan Pacific Kitchen", price: "৳ 340", best: false, img: "" },
+            { id: 17, name: "Doi Fuchka", place: "Old Dhaka Street Food", price: "৳ 120", best: false, img: "" },
+            { id: 18, name: "Chocolate Waffle", place: "Waffle Up", price: "৳ 290", best: false, img: "" },
+            { id: 19, name: "Royal Faluda", place: "Grapefruit", price: "৳ 210", best: false, img: "" },
+            { id: 20, name: "Glazed Donuts", place: "Krispy Kreme", price: "৳ 160", best: false, img: "" }
+        ];
+
+        let hotelsData = [
+            { id: 1, name: "Hotel Al-Razzak", area: "Banshkal / Old Dhaka", price: "৳ 1,500 / night", budget: "low", img: "" },
+            { id: 2, name: "Hotel Rajmohol", area: "Motijheel", price: "৳ 1,800 / night", budget: "low", img: "" },
+            { id: 3, name: "Hotel Metropolitan", area: "Fokirapool", price: "৳ 1,600 / night", budget: "low", img: "" },
+            { id: 4, name: "Hotel Dreamland", area: "Kakrail", price: "৳ 2,000 / night", budget: "low", img: "" },
+            { id: 5, name: "Hotel Inner", area: "Paltan", price: "৳ 1,900 / night", budget: "low", img: "" },
+            { id: 6, name: "Hotel Rekha International", area: "Farmgate", price: "৳ 2,200 / night", budget: "low", img: "" },
+            { id: 7, name: "Hotel Capital", area: "Motijheel", price: "৳ 1,400 / night", budget: "low", img: "" },
+            { id: 8, name: "Hotel 71", area: "Bijoynagar, Purana Paltan", price: "৳ 4,200 / night", budget: "mid", best: true, img: "" },
+            { id: 9, name: "Hotel Victory", area: "Naya Paltan", price: "৳ 3,800 / night", budget: "mid", img: "" },
+            { id: 10, name: "Hotel Star Pacific", area: "Airport Road", price: "৳ 4,500 / night", budget: "mid", img: "" },
+            { id: 11, name: "Hotel Grand Circle", area: "Malibagh", price: "৳ 3,200 / night", budget: "mid", img: "" },
+            { id: 12, name: "Hotel Asia & Resorts", area: "Topkhana Road", price: "৳ 3,500 / night", budget: "mid", img: "" },
+            { id: 13, name: "Hotel Uttara Inn", area: "Uttara Sector 3", price: "৳ 3,900 / night", budget: "mid", img: "" },
+            { id: 14, name: "Hotel Central Inn", area: "Dhanmondi", price: "৳ 4,800 / night", budget: "mid", img: "" },
+            { id: 15, name: "Fars Hotel & Resorts", area: "Purana Paltan", price: "৳ 6,200 / night", budget: "mid", best: true, img: "" },
+            { id: 16, name: "Hotel Omni Residency", area: "Baridhara", price: "৳ 5,500 / night", budget: "mid", img: "" },
+            { id: 17, name: "Richmond Hotel", area: "Uttara Sector 3", price: "৳ 5,100 / night", budget: "mid", img: "" },
+            { id: 18, name: "Platinum Grand", area: "Banani", price: "৳ 7,000 / night", budget: "mid", img: "" },
+            { id: 19, name: "Best Western Plus", area: "Uttara Sector 1", price: "৳ 7,500 / night", budget: "mid", img: "" },
+            { id: 20, name: "Marino Royal Hotel", area: "Uttara", price: "৳ 4,900 / night", budget: "mid", img: "" },
+            { id: 21, name: "Hotel Lake Breeze", area: "Banani", price: "৳ 5,800 / night", budget: "mid", img: "" },
+            { id: 22, name: "Golden Tulip", area: "Banani", price: "৳ 7,200 / night", budget: "mid", img: "" },
+            { id: 23, name: "Civic Inn", area: "Uttara", price: "৳ 3,600 / night", budget: "mid", img: "" },
+            { id: 24, name: "Days Hotel Wyndham", area: "Baridhara", price: "৳ 6,800 / night", budget: "mid", img: "" },
+            { id: 25, name: "Tropical Daisy", area: "Gulshan-1", price: "৳ 5,400 / night", budget: "mid", img: "" },
+            { id: 26, name: "The Westin Dhaka", area: "Gulshan-2", price: "৳ 18,500 / night", budget: "luxury", img: "" },
+            { id: 27, name: "InterContinental Dhaka", area: "Minto Road", price: "৳ 19,200 / night", budget: "luxury", img: "" },
+            { id: 28, name: "Radisson Blu Water Garden", area: "Airport Road", price: "৳ 16,000 / night", budget: "luxury", img: "" },
+            { id: 29, name: "Le Méridien Dhaka", area: "Khilkhet", price: "৳ 17,500 / night", budget: "luxury", img: "" },
+            { id: 30, name: "Amari Dhaka", area: "Gulshan-2", price: "৳ 15,800 / night", budget: "luxury", img: "" },
+            { id: 31, name: "Six Seasons Hotel", area: "Gulshan-2", price: "৳ 14,500 / night", budget: "luxury", img: "" },
+            { id: 32, name: "Renaissance Dhaka", area: "Gulshan-2", price: "৳ 20,000 / night", budget: "luxury", img: "" },
+            { id: 33, name: "Hotel Sarina Dhaka", area: "Banani", price: "৳ 13,500 / night", budget: "luxury", img: "" },
+            { id: 34, name: "Sheraton Dhaka", area: "Banani", price: "৳ 21,000 / night", budget: "luxury", img: "" }
+        ];
+
+        let currentTab = 'spots';
+        let loggedInUser = null;
+        let userCountry = 'Bangladesh';
+        let totalLoginsCount = 1;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 25;
+                document.getElementById('splash-progress').style.width = progress + '%';
+                if(progress >= 100) {
+                    clearInterval(progressInterval);
+                    document.getElementById('splash-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('splash-screen').style.display = 'none';
+                        document.getElementById('login-gate').style.display = 'flex';
+                    }, 400);
+                }
+            }, 800);
+
+            lucide.createIcons();
+            renderContent('spots');
+        });
+
+        function triggerGoogleLogin() {
+            const countryEl = document.getElementById('country-select');
+            userCountry = countryEl.value;
+            
+            const sampleNames = ["Md Toufikul Islam", "Toufikul T Islam", "Rahim Ahmed", "Tanvir Hasan"];
+            const chosenName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
+            
+            loggedInUser = {
+                name: chosenName,
+                email: chosenName.toLowerCase().replace(/\s+/g, '') + '@gmail.com',
+                country: userCountry
+            };
+
+            totalLoginsCount++;
+            document.getElementById('stat-user-count').innerText = totalLoginsCount;
+            document.getElementById('stat-country-display').innerText = userCountry;
+
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('user-badge').style.display = 'flex';
+            document.getElementById('user-display-name').innerText = loggedInUser.name;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            ['spots', 'foods', 'hotels', 'rides'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if(t === tab) {
+                    btn.className = "px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-lg shadow-emerald-900/40 flex items-center gap-2";
+                } else {
+                    btn.className = "px-5 py-2.5 rounded-2xl text-xs font-bold transition-all bg-emerald-900/60 border border-emerald-700/50 text-emerald-200 hover:bg-emerald-800 flex items-center gap-2";
+                }
+            });
+            renderContent(tab);
+        }
+
+        function renderContent(tab, filterQuery = '') {
+            const grid = document.getElementById('content-grid');
+            grid.innerHTML = '';
+
+            if(tab === 'spots') {
+                const filtered = spotsData.filter(s => s.name.toLowerCase().includes(filterQuery.toLowerCase()) || s.location.toLowerCase().includes(filterQuery.toLowerCase()));
+                filtered.forEach(item => {
+                    grid.innerHTML += `
+                        <div class="glass-card rounded-3xl p-5 border border-emerald-500/20 flex flex-col justify-between hover:border-emerald-400/50 transition-all shadow-lg">
+                            <div>
+                                <div class="h-40 rounded-2xl bg-emerald-900/50 mb-4 flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 to-transparent"></div>
+                                    <i data-lucide="map-pin" class="w-10 h-10 text-emerald-400 absolute"></i>
+                                    <div class="absolute bottom-3 left-3 right-3 flex justify-between items-center text-xs">
+                                        <span class="bg-emerald-800/80 px-2.5 py-1 rounded-lg text-emerald-200 font-medium">${item.location}</span>
+                                        <a href="https://www.google.com/search?q=${encodeURIComponent(item.name + ' ' + item.location + ' photos')}" target="_blank" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg backdrop-blur-md">Google Photos</a>
+                                    </div>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-1">${item.name}</h3>
+                                <p class="text-xs text-emerald-200/80 mb-4">${item.desc}</p>
+                            </div>
+                            <button onclick="openFullScreenMap('${item.name}', '${item.location}')" class="w-full bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="maximize-2" class="w-4 h-4"></i> Full-Screen Live Map
+                            </button>
+                        </div>
+                    `;
+                });
+            } else if(tab === 'foods') {
+                const filtered = foodsData.filter(f => f.name.toLowerCase().includes(filterQuery.toLowerCase()) || f.place.toLowerCase().includes(filterQuery.toLowerCase()));
+                filtered.forEach(item => {
+                    grid.innerHTML += `
+                        <div class="glass-card rounded-3xl p-5 border border-emerald-500/20 flex flex-col justify-between hover:border-emerald-400/50 transition-all shadow-lg">
+                            <div>
+                                <div class="h-36 rounded-2xl bg-emerald-900/40 mb-4 flex items-center justify-center relative">
+                                    ${item.best ? '<span class="absolute top-3 left-3 bg-amber-500 text-gray-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1 shadow"><i data-lucide="flame" class="w-3 h-3"></i> Best Value</span>' : ''}
+                                    <i data-lucide="utensils" class="w-8 h-8 text-emerald-400"></i>
+                                    <span class="absolute bottom-3 right-3 bg-emerald-950/80 px-3 py-1 rounded-lg text-xs font-bold text-emerald-300">${item.price}</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-1">${item.name}</h3>
+                                <p class="text-xs text-emerald-300 mb-4">${item.place}</p>
+                            </div>
+                            <button onclick="openFoodOrderModal('${item.name}', '${item.price}')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i> Order via 5 Partner Apps
+                            </button>
+                        </div>
+                    `;
+                });
+            } else if(tab === 'hotels') {
+                const filtered = hotelsData.filter(h => h.name.toLowerCase().includes(filterQuery.toLowerCase()) || h.area.toLowerCase().includes(filterQuery.toLowerCase()));
+                filtered.forEach(item => {
+                    grid.innerHTML += `
+                        <div class="glass-card rounded-3xl p-5 border border-emerald-500/20 flex flex-col justify-between hover:border-emerald-400/50 transition-all shadow-lg">
+                            <div>
+                                <div class="h-36 rounded-2xl bg-emerald-900/40 mb-4 flex items-center justify-center relative">
+                                    <span class="absolute top-3 left-3 bg-emerald-800 text-emerald-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">${item.budget} Budget</span>
+                                    ${item.best ? '<span class="absolute top-3 right-3 bg-amber-500 text-gray-950 text-[10px] font-extrabold px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Best Deal</span>' : ''}
+                                    <i data-lucide="hotel" class="w-8 h-8 text-emerald-400"></i>
+                                    <span class="absolute bottom-3 right-3 bg-emerald-950/80 px-3 py-1 rounded-lg text-xs font-bold text-emerald-300">${item.price}</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-1">${item.name}</h3>
+                                <p class="text-xs text-emerald-300 mb-4">${item.area}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <button onclick="openHotelBookingModal('${item.name}', '${item.price}')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                                    <i data-lucide="bookmark" class="w-4 h-4"></i> Book via 5 Partners
+                                </button>
+                                <button onclick="openFullScreenMap('${item.name}', '${item.area}')" class="w-full bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-1.5">
+                                    <i data-lucide="map" class="w-3.5 h-3.5"></i> Live Full Map
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else if(tab === 'rides') {
+                const ridesList = [
+                    { title: "Airport (HSIA) ⇄ Gulshan / Banani", car: "Sedan AC Car", fare: "৳ 450", best: true },
+                    { title: "Motijheel ⇄ Dhanmondi Lake", car: "Mini Hatchback", fare: "৳ 280", best: false },
+                    { title: "Uttara ⇄ Motijheel Commercial Area", car: "AC Sedan", fare: "৳ 550", best: false },
+                    { title: "Mirpur 10 ⇄ Shahbag / TSC", car: "Bike Ride", fare: "৳ 160", best: true },
+                    { title: "Mohakhali ⇄ Uttara Sector 3", car: "Premier Sedan", fare: "৳ 390", best: false }
+                ];
+                ridesList.forEach(r => {
+                    grid.innerHTML += `
+                        <div class="glass-card rounded-3xl p-5 border border-emerald-500/20 flex flex-col justify-between hover:border-emerald-400/50 transition-all shadow-lg">
+                            <div>
+                                <div class="h-32 rounded-2xl bg-emerald-900/40 mb-4 flex items-center justify-center relative">
+                                    ${r.best ? '<span class="absolute top-3 left-3 bg-amber-500 text-gray-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Lowest Fare</span>' : ''}
+                                    <i data-lucide="car" class="w-8 h-8 text-emerald-400"></i>
+                                    <span class="absolute bottom-3 right-3 bg-emerald-950/80 px-3 py-1 rounded-lg text-xs font-bold text-emerald-300">${r.fare}</span>
+                                </div>
+                                <h3 class="text-base font-bold text-white mb-1">${r.title}</h3>
+                                <p class="text-xs text-emerald-300 mb-4">${r.car}</p>
+                            </div>
+                            <button onclick="openRideBookingModal('${r.title}', '${r.fare}')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="navigation" class="w-4 h-4"></i> Compare 4 Ride Partners
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function handleSearch(val) {
+            renderContent(currentTab, val);
+        }
+
+        function openFullScreenMap(name, location) {
+            const modal = document.getElementById('map-modal');
+            document.getElementById('map-modal-title').innerText = `Live Map: ${name} (${location})`;
+            const iframe = document.getElementById('map-iframe');
+            iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(name + ' ' + location + ' Dhaka')}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+            modal.style.display = 'flex';
+        }
+
+        function closeMapModal() {
+            document.getElementById('map-modal').style.display = 'none';
+            document.getElementById('map-iframe').src = '';
+        }
+
+        function openFoodOrderModal(foodName, price) {
+            const modal = document.getElementById('action-modal');
+            const body = document.getElementById('modal-content-body');
+            body.innerHTML = `
+                <div class="text-center mb-4">
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-semibold">Food Delivery Partner</span>
+                    <h3 class="text-xl font-bold text-white mt-2">${foodName}</h3>
+                    <p class="text-sm font-bold text-emerald-400 mt-1">Est. Price: ${price}</p>
+                </div>
+                <div class="space-y-2 mb-6">
+                    <p class="text-xs text-emerald-200">Select partner app (Auto-Logged in via SSO):</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="https://www.foodpanda.com.bd" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🍔 Foodpanda <span class="ml-auto text-[10px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded">Best</span></a>
+                        <a href="https://pathao.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🛵 Pathao Food</a>
+                        <a href="https://hungrynaki.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🍲 HungryNaki</a>
+                        <a href="https://www.ubereats.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🚗 Uber Eats</a>
+                        <a href="https://foodi.com.bd" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white col-span-2 justify-center">🍱 Foodi</a>
+                    </div>
+                </div>
+                <button onclick="closeActionModal()" class="w-full bg-emerald-500 text-gray-950 font-bold py-3 rounded-xl text-xs hover:bg-emerald-400">Confirm Order Gateway</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function openHotelBookingModal(hotelName, price) {
+            const modal = document.getElementById('action-modal');
+            const body = document.getElementById('modal-content-body');
+            body.innerHTML = `
+                <div class="text-center mb-4">
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-semibold">Hotel Booking Partner</span>
+                    <h3 class="text-xl font-bold text-white mt-2">${hotelName}</h3>
+                    <p class="text-sm font-bold text-emerald-400 mt-1">${price}</p>
+                </div>
+                <div class="space-y-2 mb-6">
+                    <p class="text-xs text-emerald-200">Select booking platform (Auto-Logged in):</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="https://www.booking.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🏨 Booking.com <span class="ml-auto text-[10px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded">Deal</span></a>
+                        <a href="https://www.agoda.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🌐 Agoda</a>
+                        <a href="https://www.sharetrip.net" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">✈️ ShareTrip</a>
+                        <a href="https://www.gozayaan.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🎫 GoZayaan</a>
+                        <a href="https://www.makemytrip.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white col-span-2 justify-center">🌟 MakeMyTrip</a>
+                    </div>
+                </div>
+                <button onclick="closeActionModal()" class="w-full bg-emerald-500 text-gray-950 font-bold py-3 rounded-xl text-xs hover:bg-emerald-400">Proceed to Secure Checkout</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function openRideBookingModal(route, fare) {
+            const modal = document.getElementById('action-modal');
+            const body = document.getElementById('modal-content-body');
+            body.innerHTML = `
+                <div class="text-center mb-4">
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-semibold">Ride Comparison</span>
+                    <h3 class="text-lg font-bold text-white mt-2">${route}</h3>
+                    <p class="text-sm font-bold text-emerald-400 mt-1">Est. Fare: ${fare}</p>
+                </div>
+                <div class="space-y-2 mb-6">
+                    <p class="text-xs text-emerald-200">Select ride-sharing partner app:</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="https://www.uber.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🚗 Uber BD</a>
+                        <a href="https://indrive.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🚙 InDrive <span class="ml-auto text-[10px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded">Lowest</span></a>
+                        <a href="https://pathao.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🏍️ Pathao Ride</a>
+                        <a href="https://obhai.com" target="_blank" class="glass-card p-3 rounded-xl flex items-center gap-2 hover:bg-emerald-800/50 text-xs font-semibold text-white">🛺 Obhai</a>
+                    </div>
+                </div>
+                <button onclick="closeActionModal()" class="w-full bg-emerald-500 text-gray-950 font-bold py-3 rounded-xl text-xs hover:bg-emerald-400">Book Ride Instantly</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeActionModal() {
+            document.getElementById('action-modal').style.display = 'none';
+        }
+
+        function openOwnerDashboard() {
+            document.getElementById('owner-modal').style.display = 'flex';
+        }
+
+        function closeOwnerDashboard() {
+            document.getElementById('owner-modal').style.display = 'none';
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('admin-pin-input').value;
+            if(pin === '1234') {
+                document.getElementById('owner-auth-container').style.display = 'none';
+                document.getElementById('owner-panel-content').style.display = 'block';
+                document.getElementById('stat-user-count').innerText = totalLoginsCount;
+            } else {
+                alert('Incorrect PIN! Default PIN is 1234');
+            }
+        }
+
+        function updateWebsiteLogo() {
+            const newLogo = document.getElementById('new-logo-url').value;
+            if(newLogo) {
+                const container = document.getElementById('brand-logo-container');
+                container.innerHTML = `<img src="${newLogo}" class="w-full h-full object-cover rounded-xl" />`;
+                alert('Website logo updated successfully!');
+            }
+        }
+
+        function addNewCustomItem() {
+            const cat = document.getElementById('new-item-category').value;
+            const name = document.getElementById('new-item-name').value;
+            const loc = document.getElementById('new-item-location').value;
+            const priceDesc = document.getElementById('new-item-price-or-desc').value;
+            const img = document.getElementById('new-item-img').value;
+
+            if(!name || !loc) {
+                alert('Please enter at least name and location!');
+                return;
+            }
+
+            if(cat === 'spots') {
+                spotsData.unshift({ id: spotsData.length + 1, name, location: loc, desc: priceDesc || 'Custom added spot', img });
+            } else if(cat === 'foods') {
+                foodsData.unshift({ id: foodsData.length + 1, name, place: loc, price: priceDesc || '৳ 250', best: true, img });
+            } else if(cat === 'hotels') {
+                hotelsData.unshift({ id: hotelsData.length + 1, name, area: loc, price: priceDesc || '৳ 3,000 / night', budget: 'mid', img });
+            }
+
+            alert(`Successfully added new ${cat} item!`);
+            document.getElementById('new-item-name').value = '';
+            document.getElementById('new-item-location').value = '';
+            document.getElementById('new-item-price-or-desc').value = '';
+            document.getElementById('new-item-img').value = '';
+            renderContent(currentTab);
+        }
+    </script>
+</body>
+</html>
